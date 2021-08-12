@@ -43,3 +43,6 @@ RUN curl -sS https://get.symfony.com/cli/installer | bash \
   && mv /root/.symfony/bin/symfony /usr/local/bin/symfony
 
 RUN symfony server:ca:install
+
+RUN mkdir /src
+WORKDIR /src
