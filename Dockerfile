@@ -44,5 +44,44 @@ RUN curl -sS https://get.symfony.com/cli/installer | bash \
 
 RUN symfony server:ca:install
 
+# https://docs.docker.com/engine/install/debian/
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+  apt-transport-https \
+  ca-certificates \
+  curl \
+  gnupg \
+  lsb-release \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+RUN echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+  docker-ce \
+  docker-ce-cli \
+  containerd.io \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+# https://docs.docker.com/compose/install/
+RUN curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+RUN chmod +x /usr/local/bin/docker-compose
+
+# https://github.com/nodesource/distributions/blob/master/README.md#debinstall
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+  nodejs \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+# https://classic.yarnpkg.com/en/docs/install#debian-stable
+RUN npm install --global yarn
+
 RUN mkdir /src
 WORKDIR /src
